@@ -1,4 +1,4 @@
-import mongoose, { now } from "mongoose";
+import mongoose from "mongoose";
 
 const Quote = mongoose.model('Date', new mongoose.Schema({
     customer: {
