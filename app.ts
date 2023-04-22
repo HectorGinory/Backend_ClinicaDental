@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-import express from 'express';
-import mongoose from 'mongoose';
-import config from './config.js';
-
-const app = express();
-
-mongoose.connect('mongodb+srv://dbAdmin:dbAdmin1234@clinicadental.trxdmql.mongodb.net/test').then(()=>{
-    console.log('Connected')
-}).catch(()=>{
-    console.log('Failed to connect')
-})
-
-app.use(express.json());
-
-app.listen(3000, () => console.log("Servidor levantado en 3000"));
-=======
 import express from 'express';
 import mongoose from 'mongoose';
 import config from './config.js';
@@ -45,4 +28,3 @@ const handlerError = (err:Error,req,res,next)=>{
 app.use(express.json());
 app.use(handlerError);
 app.listen(3000, () => console.log('Server up in port 3000'));
->>>>>>> afdbae3bdd8ad545156b33ed45e9b1311315695f
