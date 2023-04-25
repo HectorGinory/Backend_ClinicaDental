@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {searchUserById,listSearchUser} from './controller.js';
+import {searchUserById,listSearchUser,createUser} from './controller.js';
 
 const router = express.Router();
 
@@ -22,6 +22,17 @@ router.get('/:id',async(req,res,next)=>{
             return next(new Error('NOT_EXIST_USER'));
         }
         return res.json(user);
+    } catch (error) {
+        next(error);
+    }
+
+});
+
+router.post('/',async (req, res, next) => {
+
+    try {
+        const newUser = await createUser(req.body);
+        return res.json("Create User");
     } catch (error) {
         next(error);
     }

@@ -22,3 +22,8 @@ export const searchUserById = async(id)=>{
     return user
 };
 
+export const createUser = async(newUser) => {
+    const user =  new Users(newUser);
+    user.password = await bcrypt.hash(newUser.password, 1);
+    return await user.save();
+};
