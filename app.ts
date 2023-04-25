@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import config from './config.js';
+import routerUser from './entities/user/router.js';
+import routerQuote from './entities/quote/router.js';
 
 const app = express();
 
@@ -26,5 +27,7 @@ const handlerError = (err:Error,req,res,next)=>{
 };
 
 app.use(express.json());
+app.use('/user', routerUser)
+app.use('/quote', routerQuote)
 app.use(handlerError);
 app.listen(3000, () => console.log('Server up in port 3000'));

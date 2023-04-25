@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 
-const Quote = mongoose.model('Date', new mongoose.Schema({
+const Quote = mongoose.model('Quote', new mongoose.Schema({
     customer: {
         type: mongoose.Types.ObjectId,
-        required: true,
         ref: 'User'
     },
     date: {
@@ -15,8 +14,13 @@ const Quote = mongoose.model('Date', new mongoose.Schema({
         ref: 'User'
     },
     consultation: {
-        type: String
+        type: String,
+        default: "Revisión"
+    },
+    dateOfCreation: {
+        type: Date,
+        default: Date.now
     }
-}))
+}, { versionKey: false }))
 
-
+export default Quote;

@@ -46,8 +46,8 @@ router.post('/login',async (req, res, next) => {
             return next(new Error('NOT_EXIST_USER'));
         }
         return res.json({token});
-    } catch (error) {
-        next(error);
+    } catch (e) {
+        next(e);
     }
 
 });
