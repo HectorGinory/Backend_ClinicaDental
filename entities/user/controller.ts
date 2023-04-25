@@ -27,3 +27,9 @@ export const createUser = async(newUser) => {
     user.password = await bcrypt.hash(newUser.password, 1);
     return await user.save();
 };
+
+export const updateUser = async(id,body) => {
+
+    let user = await Users.updateOne({_id:id},body);
+    return user;
+};

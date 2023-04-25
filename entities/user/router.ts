@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {searchUserById,listSearchUser,createUser} from './controller.js';
+import {searchUserById,listSearchUser,createUser,updateUser} from './controller.js';
 
 const router = express.Router();
 
@@ -37,4 +37,17 @@ router.post('/',async (req, res, next) => {
         next(error);
     }
 
+});
+
+router.put('/:id',async (req, res, next) => {
+    
+    try {
+        const user = await updateUser(req.params.id,req.body);
+        if(user.upsertedCount == 0){
+            return next(new Error('NOT_CANT_UPDATE'));
+        }
+        return res.json(user);
+    } catch (error) {
+        next(error);
+    }
 });
