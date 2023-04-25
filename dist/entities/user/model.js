@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    role: {
+        type: String,
+        default: 'Cliente'
     }
 }, { versionKey: false });
 const Users = mongoose.model('Users', UserSchema);
