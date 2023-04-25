@@ -18,6 +18,16 @@ router.post('/login',async (req, res, next) => {
 
 });
 
+router.post('/logout', auth ,async (req, res, next) => {
+
+    try {
+        return res.json({Message:"Disconnected successfully"});
+    } catch (e) {
+        next(e);
+    }
+
+});
+
 router.get('/',async (req, res, next) => {
    
     try {
