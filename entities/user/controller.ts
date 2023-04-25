@@ -33,3 +33,9 @@ export const updateUser = async(id,body) => {
     let user = await Users.updateOne({_id:id},body);
     return user;
 };
+
+export const deleteUser = async(id) => {
+
+    const user = await Users.deleteOne({_id:id});
+    return user;
+};

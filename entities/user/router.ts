@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {searchUserById,listSearchUser,createUser,updateUser} from './controller.js';
+import {searchUserById,listSearchUser,createUser,updateUser,deleteUser} from './controller.js';
 
 const router = express.Router();
 
@@ -51,3 +51,19 @@ router.put('/:id',async (req, res, next) => {
         next(error);
     }
 });
+
+router.delete('/:id',async (req, res, next) => {
+    
+    try {
+        const user = await deleteUser(req.params.id);
+        if (user.deletedCount == 0) {
+            return next(new Error('NOT_EXIST_USER'));
+        }
+        return res.json(user);
+    } catch (error) {
+        next(error);
+    }
+    
+});
+
+export default router;
