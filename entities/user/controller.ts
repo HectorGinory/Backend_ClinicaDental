@@ -3,6 +3,12 @@ import jwt from 'jsonwebtoken';
 import config from '../../config.js';
 import bcrypt from 'bcrypt';
 
+export const userLogIn = async(user) => {
+    const userFind = await Users.findOne({email:user.email, password:user.password});
+    const token = jwt.sign({email:userFind?.email, id:userFind?._id, rol: userFind?.rol},config.SECRET,{expiresIn:5000});    
+    return token;
+}
+
 export const listSearchUser = async(data) => {
     if(data.name){
         const user = await Users.findOne({name:data});

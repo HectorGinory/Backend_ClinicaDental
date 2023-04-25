@@ -1,8 +1,22 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {searchUserById,listSearchUser,createUser,updateUser,deleteUser} from './controller.js';
+import {searchUserById,listSearchUser,createUser,updateUser,deleteUser,userLogIn} from './controller.js';
 
 const router = express.Router();
+
+router.post('/login',async (req, res, next) => {
+
+    try {
+        const token = await userLogIn(req.body);
+        if (!token) {
+            return next(new Error('NOT_EXIST_USER'));
+        }
+        return res.json({token});
+    } catch (e) {
+        next(e);
+    }
+
+});
 
 router.get('/',async (req, res, next) => {
    
