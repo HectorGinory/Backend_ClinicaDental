@@ -1,8 +1,18 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {searchUserById} from './controller.js';
+import {searchUserById,listSearchUser} from './controller.js';
 
 const router = express.Router();
+
+router.get('/',async (req, res, next) => {
+   
+    try {
+        const user = await listSearchUser(req.query);
+        return res.json(user);
+    } catch (error) {
+        next(error);
+    }
+});
 
 router.get('/:id',async(req,res,next)=>{
 

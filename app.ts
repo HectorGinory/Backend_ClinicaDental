@@ -4,7 +4,7 @@ import config from './config.js';
 
 const app = express();
 
-mongoose.connect('mongodb+srv://dbAdmin:dbAdmin1234@clinicadental.trxdmql.mongodb.net/test').then(()=>{
+mongoose.connect(config.DDBB).then(()=>{
     console.log('connected to the database')
 }).catch(()=>{
     console.log('Failed to connect database')
