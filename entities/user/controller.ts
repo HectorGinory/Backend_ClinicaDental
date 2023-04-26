@@ -4,12 +4,15 @@ import config from '../../config.js';
 import bcrypt from 'bcrypt';
 
 export const userLogIn = async(user) => {
-    const userFind = await Users.findOne({email:user.email, password:user.password});
-    const token = jwt.sign({email:userFind?.email, id:userFind?._id, rol: userFind?.rol},config.SECRET,{expiresIn:5000});    
-    return token;
+    const findUser = await Users.findOne({email: user.email}).select('+password')
+    if(!findUser) throw new Error('NOT_FOUND')
+    if(!(await bcrypt.compare(user.password, findUser.password))) throw new Error('NOT_FOUND')
+    const token = jwt.sign({email: user.email, id: findUser._id}, config.SECRET)
+    return token
 }
 
 export const listSearchUser = async(data) => {
+
     if(data.name){
         const user = await Users.findOne({name:data});
         return user;
@@ -24,6 +27,7 @@ export const listSearchUser = async(data) => {
 };
 
 export const searchUserById = async(id)=>{
+
     const user = await Users.findOne({_id:id});
     return user
 };

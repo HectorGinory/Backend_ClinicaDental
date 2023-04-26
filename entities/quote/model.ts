@@ -7,6 +7,7 @@ const Quote = mongoose.model('Quote', new mongoose.Schema({
     },
     date: {
         type: String,
+        unique: true
     },
     dentist: {
         type: mongoose.Types.ObjectId,

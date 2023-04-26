@@ -8,6 +8,8 @@ export const auth = (req, res, next) => {
     }
     const token = req.headers.authorization.split(' ')[1]
     try {
+        console.log(token)
+        console.log(jwt.verify(token, config.SECRET))
         req.token = jwt.verify(token, config.SECRET)
         next()
     } catch(e) {
