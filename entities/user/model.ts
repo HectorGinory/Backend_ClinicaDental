@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+
+export const USER_ROLS = {
+    CLIENT: "Cliente",
+    DENTIST: "Dentista",
+    ADMIN: "Admin"
+}
+
 const Users = mongoose.model('Users',new mongoose.Schema({
     name:{
         type:String,
@@ -26,7 +33,11 @@ const Users = mongoose.model('Users',new mongoose.Schema({
     },
     rol: {
         type: String,
-        default: 'Cliente',
+        default: USER_ROLS.CLIENT,
+    },
+    dentist: {
+        type: mongoose.Types.ObjectId,
+        default: null
     }
 }, { versionKey: false }));
 

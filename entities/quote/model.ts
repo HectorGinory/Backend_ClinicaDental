@@ -16,11 +16,19 @@ const Quote = mongoose.model('Quote', new mongoose.Schema({
     },
     consultation: {
         type: String,
-        default: "Revisión"
+        required: true
     },
     dateOfCreation: {
         type: Date,
         default: Date.now
+    },
+    dateOfQuote: {
+        type: Date,
+        required:true
+    },
+    endOfQuote: {
+        type: Date,
+        required:true
     }
 }, { versionKey: false }))
 

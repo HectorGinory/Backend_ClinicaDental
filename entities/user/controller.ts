@@ -1,4 +1,4 @@
-import Users from './model.js';
+import Users, { USER_ROLS } from './model.js';
 import jwt from 'jsonwebtoken';
 import config from '../../config.js';
 import bcrypt from 'bcrypt';
@@ -33,9 +33,16 @@ export const searchUserById = async(id)=>{
 };
 
 export const createUser = async(newUser) => {
-
+    newUser.password = await bcrypt.hash(newUser.password, 1);
+    // const as = Users.find({_id: newUser.dentist})
+    // console.log(as);
+    // if(!newUser.dentist) {
+    //     newUser.dentist = "NO_DENTIST"
+    //     console.log(newUser.dentist);
+    // } else {
+    //     newUser.dentist = newUser.dentist.toString()
+    // }
     const user =  new Users(newUser);
-    user.password = await bcrypt.hash(newUser.password, 1);
     return await user.save();
 };
 
@@ -46,7 +53,6 @@ export const updateUser = async(id,body) => {
 };
 
 export const deleteUser = async(id) => {
-
     const user = await Users.deleteOne({_id:id});
     return user;
 };
