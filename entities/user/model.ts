@@ -35,10 +35,7 @@ const Users = mongoose.model('Users',new mongoose.Schema({
         type: String,
         default: USER_ROLS.CLIENT,
     },
-    dentist: {
-        type: mongoose.Types.ObjectId,
-        default: null
-    }
+    dentist: mongoose.Types.ObjectId
 }, { versionKey: false }));
 
 export default Users;

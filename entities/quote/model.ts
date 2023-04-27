@@ -5,16 +5,12 @@ const Quote = mongoose.model('Quote', new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'User'
     },
-    date: {
-        type: String,
-        unique: true
-    },
     dentist: {
         type: mongoose.Types.ObjectId,
         required: true,
         ref: 'User'
     },
-    consultation: {
+    quote: {
         type: String,
         required: true
     },
