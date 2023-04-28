@@ -7,7 +7,7 @@ import config from './config.js';
 const app = express();
 
 mongoose.connect(config.DDBB!).then(()=>{
-    console.log('connected to the database')
+    console.log('Connected to the database')
 }).catch(()=>{
     console.log('Failed to connect database')
 })

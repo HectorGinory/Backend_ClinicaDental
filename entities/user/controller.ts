@@ -12,7 +12,6 @@ export const userLogIn = async(user) => {
 }
 
 export const listSearchUser = async(data) => {
-
     if(data.name){
         const user = await Users.findOne({name:data});
         return user;
@@ -34,14 +33,6 @@ export const searchUserById = async(id)=>{
 
 export const createUser = async(newUser) => {
     newUser.password = await bcrypt.hash(newUser.password, 1);
-    // const as = Users.find({_id: newUser.dentist})
-    // console.log(as);
-    // if(!newUser.dentist) {
-    //     newUser.dentist = "NO_DENTIST"
-    //     console.log(newUser.dentist);
-    // } else {
-    //     newUser.dentist = newUser.dentist.toString()
-    // }
     const user =  new Users(newUser);
     return await user.save();
 };
