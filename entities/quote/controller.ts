@@ -18,14 +18,16 @@ export const createQuote = async (newQuote, token) => {
     newQuote.dateOfQuote = new Date(newQuote.dateOfQuote)
     newQuote.endOfQuote = new Date(newQuote.endOfQuote)
     console.log(await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer))
-    if(await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)) {
+    if((await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)).length !== 0) {
         throw new Error('DENTIST_IN_OTHER_QUOTE')
     }
     let quote = new Quote(newQuote)
+    console.log(newQuote)
+    console.log(quote)
     return await quote.save()
 }
 
-const checkQuoteConcur = async(dateStart, dateEnd, dentistQuote, customerQuote) => (await Quote.findOne({$and: [{$or: [{dentist: dentistQuote}, {customer: customerQuote}]}, {$or:[{$and: [{dateOfQuote: {$gt: dateStart}}, {dateOfQuote: {$lt: dateEnd}}]},{$and: [{endOfQuote: {$gt: dateStart}}, {endOfQuote: {$lt: dateEnd}}]}]}]}))
+const checkQuoteConcur = async(dateStart, dateEnd, dentistQuote, customerQuote) => (await Quote.find({$and: [{$or: [{dentist: dentistQuote}, {customer: customerQuote}]}, {$or:[{$and: [{dateOfQuote: {$gt: dateStart}}, {dateOfQuote: {$lt: dateEnd}}]},{$and: [{endOfQuote: {$gt: dateStart}}, {endOfQuote: {$lt: dateEnd}}]}]}]}))
 
 const modifiedQuote = async (quoteId, token) => {
     const quote = Quote.find({_id: quoteId})

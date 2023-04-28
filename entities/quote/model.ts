@@ -7,7 +7,6 @@ const Quote = mongoose.model('Quote', new mongoose.Schema({
     },
     dentist: {
         type: mongoose.Types.ObjectId,
-        required: true,
         ref: 'User'
     },
     quote: {
@@ -25,6 +24,14 @@ const Quote = mongoose.model('Quote', new mongoose.Schema({
     endOfQuote: {
         type: Date,
         required:true
+    },
+    activeQuote: {
+        type: Boolean,
+        default: true
+    },
+    deletedAt: {
+        type: Date,
+        default: null
     }
 }, { versionKey: false }))
 
