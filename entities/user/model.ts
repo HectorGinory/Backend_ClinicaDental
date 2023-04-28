@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema({
 
+export const USER_ROLS = {
+    CLIENT: "Cliente",
+    DENTIST: "Dentista",
+    ADMIN: "Admin"
+}
+
+const Users = mongoose.model('Users',new mongoose.Schema({
     name:{
         type:String,
         required:true,
@@ -25,12 +31,18 @@ const UserSchema = new mongoose.Schema({
         type:Date,
         default: Date.now
     },
+<<<<<<< HEAD
     rol:{
         type:String,
         default:'Cliente'
     }
+=======
+    rol: {
+        type: String,
+        default: USER_ROLS.CLIENT,
+    },
+    dentist: mongoose.Types.ObjectId
+}, { versionKey: false }));
+>>>>>>> origin/hectordev
 
-}, { versionKey: false });
-
-const Users = mongoose.model('Users',UserSchema);
 export default Users;
