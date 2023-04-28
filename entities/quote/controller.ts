@@ -22,13 +22,21 @@ export const createQuote = async (newQuote, token) => {
         throw new Error('DENTIST_IN_OTHER_QUOTE')
     }
     let quote = new Quote(newQuote)
-    console.log(newQuote)
-    console.log(quote)
-    return await quote.save()
+    await quote.save()
+    return quote
 }
 
 const checkQuoteConcur = async(dateStart, dateEnd, dentistQuote, customerQuote) => (await Quote.find({$and: [{$or: [{dentist: dentistQuote}, {customer: customerQuote}]}, {$or:[{$and: [{dateOfQuote: {$gt: dateStart}}, {dateOfQuote: {$lt: dateEnd}}]},{$and: [{endOfQuote: {$gt: dateStart}}, {endOfQuote: {$lt: dateEnd}}]}]}]}))
 
-const modifiedQuote = async (quoteId, token) => {
-    const quote = Quote.find({_id: quoteId})
+export const modifiedQuote = async (quoteId,newQuote, token) => {
+    if(!quoteId || !newQuote || !token) throw new Error("INFO_LEFT")
+    let quote = await Quote.findOne({_id: quoteId})
+    if(!quote) throw new Error("NO_QUOTE")
+    if(token.rol === USER_ROLS.ADMIN || ((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && (quote.customer?.toString() === token.id || quote.dentist?.toString() === token.id))) {
+        newQuote.updateAt = new Date()
+        await Quote.updateOne({_id: quoteId}, newQuote)
+        return quote
+    } else {
+        throw new Error("NO_PERMISSION")
+    }
 }

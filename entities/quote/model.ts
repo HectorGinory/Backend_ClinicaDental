@@ -29,6 +29,10 @@ const Quote = mongoose.model('Quote', new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    updateAt: {
+        type: Date,
+        default: Date.now
+    },
     deletedAt: {
         type: Date,
         default: null
