@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {createQuote, modifiedQuote, deleteQuote } from './controller.js'
+import {createQuote, modifiedQuote, deleteQuote, getQuotes, getQuotesId } from './controller.js'
 
 const router = express.Router();
 
@@ -28,4 +28,19 @@ router.delete("/:id", auth, async(req, res, next) => {
     }
 })
 
+router.get("/", auth ,async(req, res, next) => {
+    try {
+        return res.json(await getQuotes(req.query, req.token))
+    } catch(e) {
+        next(e)
+    }
+})
+
+router.get("/:id", auth ,async(req, res, next) => {
+    try {
+        return res.json(await getQuotesId(req.params.id, req.token))
+    } catch(e) {
+        next(e)
+    }
+})
 export default router;

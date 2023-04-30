@@ -1,7 +1,4 @@
 import Users, { USER_ROLS } from '../user/model.js';
-import jwt from 'jsonwebtoken';
-import config from '../../config.js';
-import bcrypt from 'bcrypt';
 import Quote from './model.js';
 
 export const createQuote = async (newQuote, token) => {
@@ -48,11 +45,32 @@ export const deleteQuote = async (quoteId, token, req) => {
     if(!quote) throw new Error("NO_QUOTE")
     if(token.rol === USER_ROLS.ADMIN || ((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && (quote.customer?.toString() === token.id || quote.dentist?.toString() === token.id))) {
         req.updateAt = new Date()
-        req.deleteAt = req.updateAt
+        req.deletedAt = new Date()
         req.activeQuote = false
-        await Quote.updateOne({_id: quoteId}, req)
+        quote = await Quote.findOneAndUpdate({_id: quoteId}, req)
         return quote
     } else {
         throw new Error("NO_PERMISSION")
     }
+}
+
+export const getQuotes = async(query, token) => {
+    if(Object.keys(query).length === 0) {
+        if(token.rol === USER_ROLS.CLIENT) await Quote.find({customer: token.id})
+        if(token.rol === USER_ROLS.DENTIST) await Quote.find({dentist: token.id})
+        return await Quote.find({})
+    } else {
+        const dateOfQuoteQ = !!query.dateOfQuote ? new Date(query.dateOfQuote.split('-')) : undefined
+        const endOfQuoteQ = !!query.endOfQuote ? new Date(query.endOfQuote.split('-')) : undefined
+        return await Quote.find({$and: [token.rol === USER_ROLS.CLIENT ? {customer: token.id} : token.rol === USER_ROLS.DENTIST ? {dentist: token.id} : {},
+                                {$and: [!!dateOfQuoteQ ? {dateOfQuote: {$gt: dateOfQuoteQ}} : {}, !!endOfQuoteQ ? {endOfQuote: {$lt: endOfQuoteQ}} : {}]},
+                                token.rol === USER_ROLS.ADMIN ? {} : {deletedAt: null}]}, {customer: 1, dentist: 1, quote:1, dateOfQuote:1, endOfQuote:1})
+    }
+}
+
+export const getQuotesId = async(id, token) => {
+    const quote = await Quote.findOne({_id: id})
+    if(!quote) throw new Error('NO_QUOTE')
+    if(token.rol === USER_ROLS.CLIENT ? token.id !== quote.customer.toString() : token.rol === USER_ROLS.DENTIST ? token.id !== quote.dentist.toString() : false) throw new Error('NO_AUTH')
+    return quote
 }

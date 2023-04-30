@@ -3,11 +3,13 @@ import mongoose from "mongoose";
 const Quote = mongoose.model('Quote', new mongoose.Schema({
     customer: {
         type: mongoose.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     dentist: {
         type: mongoose.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     quote: {
         type: String,
