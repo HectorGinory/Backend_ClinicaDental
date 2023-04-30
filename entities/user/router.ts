@@ -70,15 +70,9 @@ router.put('/:id',async (req, res, next) => {
         if(user.upsertedCount == 0){
             return next(new Error('NOT_CANT_UPDATE'));
         }
-<<<<<<< HEAD
-        return res.json(user);
-    } catch (error) {
-        next(error);
-=======
-        return res.json({token});
+        return res.json({user});
     } catch (e) {
         next(e);
->>>>>>> origin/hectordev
     }
 });
 
