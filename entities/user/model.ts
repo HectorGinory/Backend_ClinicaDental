@@ -31,18 +31,11 @@ const Users = mongoose.model('Users',new mongoose.Schema({
         type:Date,
         default: Date.now
     },
-<<<<<<< HEAD
-    rol:{
-        type:String,
-        default:'Cliente'
-    }
-=======
     rol: {
         type: String,
         default: USER_ROLS.CLIENT,
     },
     dentist: mongoose.Types.ObjectId
 }, { versionKey: false }));
->>>>>>> origin/hectordev
 
 export default Users;
