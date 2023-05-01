@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {searchUserById,listSearchUser,createUser,updateUser,userLogIn} from './controller.js';
+import {searchUserById,createUser,updateUser,userLogIn} from './controller.js';
 
 const router = express.Router();
 
@@ -26,16 +26,6 @@ router.post('/logout', auth ,async (req, res, next) => {
         next(e);
     }
 
-});
-
-router.get('/',async (req, res, next) => {
-   
-    try {
-        const user = await listSearchUser(req.query);
-        return res.json(user);
-    } catch (error) {
-        next(error);
-    }
 });
 
 router.get('/:id', auth,async(req,res,next)=>{
@@ -67,7 +57,7 @@ router.put('/:id', auth,async (req, res, next) => {
     
     try {
         const user = await updateUser(req.params.id, req.body, req.token);
-        if(user.modifiedCount == 0){
+        if(user.modifiedCount == 0 ){
             return next(new Error('NOT_CANT_UPDATE'));
         }
         return res.json("Modified user");

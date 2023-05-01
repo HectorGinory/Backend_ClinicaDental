@@ -15,28 +15,13 @@ export const userLogIn = async(user) => {
     return token
 }
 
-export const listSearchUser = async(data) => {
-    if(data.name){
-        const user = await Users.findOne({name:data});
-        return user;
-    } else if(data.email){
-        const user = await Users.findOne({email:data});
-        return user;
-    } 
-    else{
-        const user = await Users.find({});
-        return user;
-    }
-};
-
 export const searchUserById = async(id, token)=>{
 
-    if(token.rol === USER_ROLS.CLIENT){
-        const user = await Users.findOne({_id:id});
-        return user
-    }
-    if(token.rol === USER_ROLS.DENTIST){
-        const user = await Users.findOne({_id:id});
+    if(token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST){
+        if(token.id !== id){
+          throw new Error('NOT_AUTHORIZED');
+        }
+        const user = await Users.findOne({_id:id},token);
         return user
     }
     if(token.rol === USER_ROLS.ADMIN){
