@@ -38,10 +38,10 @@ router.get('/',async (req, res, next) => {
     }
 });
 
-router.get('/:id',async(req,res,next)=>{
+router.get('/:id', auth,async(req,res,next)=>{
 
     try {
-        const user = await searchUserById(req.params.id);
+        const user = await searchUserById(req.params.id, req.token);
         if (user == null) {
             return next(new Error('NOT_EXIST_USER'));
         }

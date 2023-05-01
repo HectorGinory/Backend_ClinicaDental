@@ -29,10 +29,24 @@ export const listSearchUser = async(data) => {
     }
 };
 
-export const searchUserById = async(id)=>{
+export const searchUserById = async(id, token)=>{
 
-    const user = await Users.findOne({_id:id});
-    return user
+    if(token.rol === USER_ROLS.CLIENT){
+        const user = await Users.findOne({_id:id});
+        return user
+    }
+    if(token.rol === USER_ROLS.DENTIST){
+        const user = await Users.findOne({_id:id});
+        return user
+    }
+    if(token.rol === USER_ROLS.ADMIN){
+        const user = await Users.find({});
+        return user
+    }
+    else{
+        throw new Error('SERVER_ERROR')
+    }
+
 };
 
 export const createUser = async(newUser) => {
