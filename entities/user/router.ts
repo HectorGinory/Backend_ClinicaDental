@@ -1,28 +1,40 @@
 import express from 'express';
-import {searchUserById,deleteUser,listSearchUser,createUser,updateUser, userLogIn} from './controller.js';
+import { auth } from '../../services.js';
+import {searchUserById,createUser,updateUser,userLogIn, getUsers} from './controller.js';
 
 const router = express.Router();
 
-router.get('/',async (req, res, next) => {
-   
+router.post('/login',async (req, res, next) => {
+
     try {
-        const user = await listSearchUser(req.query);
-        return res.json(user);
-    } catch (error) {
-        next(error);
+        const token = await userLogIn(req.body);
+        if (!token) return next(new Error('NO_TOKEN'));
+        return res.json({token});
+    } catch (e) {
+        next(e);
     }
+
+});
+router.get('/', auth,async(req,res,next)=>{
+
+    try {
+        const user = await getUsers(req.token);
+        if (!user) return next(new Error('NO_USER'));
+        return res.json(user);
+    } catch (e) {
+        next(e);
+    }
+
 });
 
-router.get('/:id',async(req,res,next)=>{
+router.get('/:id', auth,async(req,res,next)=>{
 
     try {
-        const user = await searchUserById(req.params.id);
-        if (user == null) {
-            return next(new Error('NOT_EXIST_USER'));
-        }
+        const user = await searchUserById(req.params.id, req.token);
+        if (!user) return next(new Error('NO_USER'));
         return res.json(user);
-    } catch (error) {
-        next(error);
+    } catch (e) {
+        next(e);
     }
 
 });
@@ -31,52 +43,22 @@ router.post('/',async (req, res, next) => {
 
     try {
         const newUser = await createUser(req.body);
-        return res.json("Create User");
+        return res.json(newUser);
     } catch (error) {
         next(error);
     }
 
 });
 
-router.post('/login',async (req, res, next) => {
-
+router.put('/:id', auth,async (req, res, next) => {
+    
     try {
-        const token = await userLogIn(req.body);
-        if (!token) {
-            return next(new Error('NOT_EXIST_USER'));
-        }
-        return res.json({token});
+        const user = await updateUser(req.params.id, req.body, req.token);
+        return res.json(user);
     } catch (e) {
         next(e);
     }
-
 });
 
-router.delete('/:id',async (req, res, next) => {
-    
-    try {
-        const user = await deleteUser(req.params.id);
-        if (user.deletedCount == 0) {
-            return next(new Error('NOT_EXIST_USER'));
-        }
-        return res.json(user);
-    } catch (error) {
-        next(error);
-    }
-    
-});
-
-router.put('/:id',async (req, res, next) => {
-    
-    try {
-        const user = await updateUser(req.params.id,req.body);
-        if(user.upsertedCount == 0){
-            return next(new Error('NOT_CANT_UPDATE'));
-        }
-        return res.json(user);
-    } catch (error) {
-        next(error);
-    }
-});
 
 export default router;
