@@ -35,8 +35,7 @@ const Users = mongoose.model('Users',new mongoose.Schema({
         type: String,
         default: USER_ROLS.CLIENT,
         enum: [USER_ROLS.CLIENT, USER_ROLS.DENTIST, USER_ROLS.ADMIN]
-    },
-    dentist: mongoose.Types.ObjectId
+    }
 }, { versionKey: false }));
 
 export default Users;
