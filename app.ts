@@ -31,7 +31,10 @@ const handlerError = (err:Error,req,res,next)=>{
     if(err.message === 'CANT_CREATE_QUOTE'){
       return res.status(404).json({code:'CANT_CREATE_QUOTE',message:"The dentist/customer have a quote in that period of time"});
     }
-    return res.status(500).json({code:'SERVER_ERROR',message:err.message});
+    if(err.message === 'NO_QUOTE'){
+      return res.status(404).json({code:'NO_QUOTE',message:"This quote dont exist"});
+    }
+    return res.status(500).json({code:'SERVER_ERROR', message: err.message});
     
 };
 
