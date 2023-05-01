@@ -5,8 +5,12 @@ import bcrypt from 'bcrypt';
 
 export const userLogIn = async(user) => {
     const findUser = await Users.findOne({email: user.email}).select('+password')
-    if(!findUser) throw new Error('NOT_FOUND')
-    if(!(await bcrypt.compare(user.password, findUser.password))) throw new Error('NOT_FOUND')
+    if(!findUser){
+        throw new Error('NOT_EXIST_USER')
+    }
+    if(!(await bcrypt.compare(user.password, findUser.password))){
+        throw new Error('NOT_EXIST_USER')
+    }
     const token = jwt.sign({email: user.email, id: findUser._id, rol: findUser.rol}, config.SECRET)
     return token
 }
