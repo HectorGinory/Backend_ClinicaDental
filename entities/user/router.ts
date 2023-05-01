@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../../services.js';
-import {searchUserById,listSearchUser,createUser,updateUser,deleteUser,userLogIn} from './controller.js';
+import {searchUserById,listSearchUser,createUser,updateUser,userLogIn} from './controller.js';
 
 const router = express.Router();
 
@@ -63,31 +63,18 @@ router.post('/',async (req, res, next) => {
 
 });
 
-router.put('/:id',async (req, res, next) => {
+router.put('/:id', auth,async (req, res, next) => {
     
     try {
-        const user = await updateUser(req.params.id,req.body);
-        if(user.upsertedCount == 0){
+        const user = await updateUser(req.params.id, req.body, req.token);
+        if(user.modifiedCount == 0){
             return next(new Error('NOT_CANT_UPDATE'));
         }
-        return res.json({user});
+        return res.json("Modified user");
     } catch (e) {
         next(e);
     }
 });
 
-router.delete('/:id',async (req, res, next) => {
-    
-    try {
-        const user = await deleteUser(req.params.id);
-        if (user.deletedCount == 0) {
-            return next(new Error('NOT_EXIST_USER'));
-        }
-        return res.json(user);
-    } catch (error) {
-        next(error);
-    }
-    
-});
 
 export default router;

@@ -55,15 +55,27 @@ export const createUser = async(newUser) => {
     return await user.save();
 };
 
-export const updateUser = async(id,body) => {
+export const updateUser = async(id, body, token) => {
 
-    let user = await Users.updateOne({_id:id},body);
-    return user;
+    if(token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) {
+        const user = await Users.findOne({_id:id});
+        if(!user) {
+          throw new Error('USER_NOT_FOUND');
+        }
+        if(token.id !== id) {
+          throw new Error('NOT_AUTHORIZED');
+        }
+        const userUpdate = await Users.updateOne({_id:id},body,token);
+        return userUpdate;
+    }
+
+    if(token.rol === USER_ROLS.ADMIN) {
+        const userUpdate = await Users.updateOne({_id:id},body);
+        return userUpdate;
+    } else {
+        throw new Error('SERVER_ERROR')
+    }
 };
 
-export const deleteUser = async(id) => {
-    const user = await Users.deleteOne({_id:id});
-    return user;
-};
 
 
