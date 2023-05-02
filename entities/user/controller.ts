@@ -34,11 +34,11 @@ export const createUser = async(newUser) => {
 
 export const updateUser = async(id, body, token) => {
     if((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && id === token.id) {
-        const userUpdate = await Users.updateOne({_id:id},body,token);
+        const userUpdate = await Users.findOneAndUpdate({_id:id},body,token);
         if(!userUpdate) throw new Error('NO_USER');
         return userUpdate;
     } else if(token.rol === USER_ROLS.ADMIN) {
-        const userUpdate = await Users.updateOne({_id:id},body);
+        const userUpdate = await Users.findOneAndUpdate({_id:id},body);
         return userUpdate;
     } 
     throw new Error('NOT_AUTHORIZED')
