@@ -36,7 +36,7 @@ export const modifiedQuote = async (quoteId,newQuote, token) => {
         newQuote.updateAt = new Date()
         if(newQuote.activeQuote === true) newQuote.deletedAt = null
         if(newQuote.activeQuote === true && (await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)).length !== 0) throw new Error('CANT_CREATE_QUOTE')
-        await Quote.findOneAndUpdate({_id: quoteId}, newQuote, {new: true}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
+        quote = await Quote.findOneAndUpdate({_id: quoteId}, newQuote, {new: true}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
         return quote
     } else {
         throw new Error("NOT_AUTHORIZED")
@@ -51,7 +51,7 @@ export const deleteQuote = async (quoteId, token, req) => {
         req.updateAt = new Date()
         req.deletedAt = new Date()
         req.activeQuote = false
-        quote = await Quote.findOneAndUpdate({_id: quoteId}, req).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
+        quote = await Quote.findOneAndUpdate({_id: quoteId}, req, {new: true}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
         return quote
     } else {
         throw new Error("NOT_AUTHORIZED")
