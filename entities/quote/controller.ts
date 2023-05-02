@@ -23,7 +23,12 @@ export const createQuote = async (newQuote, token) => {
     return quote
 }
 
-const checkQuoteConcur = async(dateStart, dateEnd, dentistQuote, customerQuote) => (await Quote.find({$and: [{$or: [{dentist: dentistQuote}, {customer: customerQuote}]}, {$or:[{$and: [{dateOfQuote: {$gt: dateStart}}, {dateOfQuote: {$lt: dateEnd}}]},{$and: [{endOfQuote: {$gt: dateStart}}, {endOfQuote: {$lt: dateEnd}}]}]}, {activeQuote: true}]}))
+// REVISAR ESTOOO
+const checkQuoteConcur = async(dateStart, dateEnd, dentistQuote, customerQuote) => {
+    return await Quote.find({$and: [{$or: [{dentist: dentistQuote}, {customer: customerQuote}]}, 
+        {$or:[{$and: [{dateOfQuote: {$lte: dateStart}}, {endOfQuote: {$gte: dateStart}}]},{$and: [{dateOfQuote: {$lte: dateEnd}}, {endOfQuote: {$gte: dateEnd}}]}]}, 
+        {activeQuote: true}]})
+}
 
 export const modifiedQuote = async (quoteId,newQuote, token) => {
     if(!quoteId || !newQuote || !token) throw new Error("INFO_LEFT")
