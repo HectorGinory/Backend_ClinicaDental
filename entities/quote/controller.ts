@@ -14,7 +14,6 @@ export const createQuote = async (newQuote, token) => {
     if(token.rol === USER_ROLS.ADMIN && (!newQuote.customer || !newQuote.dentist)) throw new Error("INFO_LEFT")
     newQuote.dateOfQuote = new Date(newQuote.dateOfQuote)
     newQuote.endOfQuote = new Date(newQuote.endOfQuote)
-    console.log(await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer))
     if((await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)).length !== 0) {
         throw new Error('CANT_CREATE_QUOTE')
     }
@@ -23,7 +22,6 @@ export const createQuote = async (newQuote, token) => {
     return quote
 }
 
-// REVISAR ESTOOO
 const checkQuoteConcur = async(dateStart, dateEnd, dentistQuote, customerQuote) => {
     return await Quote.find({$and: [{$or: [{dentist: dentistQuote}, {customer: customerQuote}]}, 
         {$or:[{$and: [{dateOfQuote: {$lte: dateStart}}, {endOfQuote: {$gte: dateStart}}]},{$and: [{dateOfQuote: {$lte: dateEnd}}, {endOfQuote: {$gte: dateEnd}}]}]}, 

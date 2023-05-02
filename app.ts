@@ -42,4 +42,4 @@ app.use(express.json());
 app.use('/user', routerUser)
 app.use('/quote', routerQuote)
 app.use(handlerError);
-app.listen(config.PORT, () => console.log('Server up in port 3000'));
+app.listen(config.PORT, () => console.log(`Server up in port ${config.PORT}`));

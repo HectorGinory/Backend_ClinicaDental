@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 const Quote = mongoose.model('Quote', new mongoose.Schema({
     customer: {
         type: mongoose.Types.ObjectId,
-        ref: 'User',
+        ref: 'Users',
         required: true
     },
     dentist: {
         type: mongoose.Types.ObjectId,
-        ref: 'User',
+        ref: 'Users',
         required: true
     },
     quote: {

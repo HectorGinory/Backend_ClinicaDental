@@ -1,5 +1,5 @@
 import express from 'express';
-import { auth } from '../../services.js';
+import { auth } from '../../core/mdw.js';
 import {searchUserById,createUser,updateUser,userLogIn, getUsers} from './controller.js';
 
 const router = express.Router();
