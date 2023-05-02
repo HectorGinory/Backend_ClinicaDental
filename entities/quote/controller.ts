@@ -32,7 +32,7 @@ export const modifiedQuote = async (quoteId,newQuote, token) => {
     if(token.rol === USER_ROLS.ADMIN || ((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && (quote.customer?.toString() === token.id || quote.dentist?.toString() === token.id))) {
         newQuote.updateAt = new Date()
         if(newQuote.activeQuote === true && (await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)).length !== 0) throw new Error('CANT_CREATE_QUOTE')
-        await Quote.findOneAndUpdate({_id: quoteId}, newQuote, {new: true})
+        await Quote.findOneAndUpdate({_id: quoteId}, newQuote, {new: true}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
         return quote
     } else {
         throw new Error("NOT_AUTHORIZED")
@@ -47,7 +47,7 @@ export const deleteQuote = async (quoteId, token, req) => {
         req.updateAt = new Date()
         req.deletedAt = new Date()
         req.activeQuote = false
-        quote = await Quote.findOneAndUpdate({_id: quoteId}, req)
+        quote = await Quote.findOneAndUpdate({_id: quoteId}, req).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
         return quote
     } else {
         throw new Error("NOT_AUTHORIZED")
@@ -56,8 +56,8 @@ export const deleteQuote = async (quoteId, token, req) => {
 
 export const getQuotes = async(query, token) => {
     if(Object.keys(query).length === 0) {
-        if(token.rol === USER_ROLS.CLIENT) await Quote.find({customer: token.id})
-        if(token.rol === USER_ROLS.DENTIST) await Quote.find({dentist: token.id})
+        if(token.rol === USER_ROLS.CLIENT) await Quote.find({customer: token.id, activeQuote: true}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
+        if(token.rol === USER_ROLS.DENTIST) await Quote.find({dentist: token.id, activeQuote: true}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
         return await Quote.find({})
     } else {
         const dateOfQuoteQ = !!query.dateOfQuote ? new Date(query.dateOfQuote.split('-')) : undefined
@@ -65,6 +65,7 @@ export const getQuotes = async(query, token) => {
         return await Quote.find({$and: [token.rol === USER_ROLS.CLIENT ? {customer: token.id} : token.rol === USER_ROLS.DENTIST ? {dentist: token.id} : {},
                                 {$and: [!!dateOfQuoteQ ? {dateOfQuote: {$gt: dateOfQuoteQ}} : {}, !!endOfQuoteQ ? {endOfQuote: {$lt: endOfQuoteQ}} : {}]},
                                 token.rol === USER_ROLS.ADMIN ? {} : {deletedAt: null}]}, {customer: 1, dentist: 1, quote:1, dateOfQuote:1, endOfQuote:1})
+                                .populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
     }
 }
 
