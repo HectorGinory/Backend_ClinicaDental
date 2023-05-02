@@ -34,6 +34,7 @@ export const modifiedQuote = async (quoteId,newQuote, token) => {
     if(!quote) throw new Error("NO_QUOTE")
     if(token.rol === USER_ROLS.ADMIN || ((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && (quote.customer?.toString() === token.id || quote.dentist?.toString() === token.id))) {
         newQuote.updateAt = new Date()
+        if(newQuote.activeQuote === true) newQuote.deletedAt = null
         if(newQuote.activeQuote === true && (await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)).length !== 0) throw new Error('CANT_CREATE_QUOTE')
         await Quote.findOneAndUpdate({_id: quoteId}, newQuote, {new: true}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
         return quote

@@ -2,7 +2,6 @@ import Users, { USER_ROLS } from './model.js';
 import jwt from 'jsonwebtoken';
 import config from '../../config.js';
 import bcrypt from 'bcrypt';
-import { after } from 'node:test';
 
 export const userLogIn = async(user) => {
     const findUser = await Users.findOne({email: user.email}).select('+password')
