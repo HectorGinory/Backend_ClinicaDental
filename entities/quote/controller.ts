@@ -32,7 +32,7 @@ export const modifiedQuote = async (quoteId,newQuote, token) => {
     if(token.rol === USER_ROLS.ADMIN || ((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && (quote.customer?.toString() === token.id || quote.dentist?.toString() === token.id))) {
         newQuote.updateAt = new Date()
         if(newQuote.activeQuote === true && (await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)).length !== 0) throw new Error('CANT_CREATE_QUOTE')
-        await Quote.updateOne({_id: quoteId}, newQuote)
+        await Quote.findOneAndUpdate({_id: quoteId}, newQuote, {new: true})
         return quote
     } else {
         throw new Error("NOT_AUTHORIZED")
