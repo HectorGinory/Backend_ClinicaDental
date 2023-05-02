@@ -13,11 +13,23 @@ mongoose.connect(config.DDBB!).then(()=>{
 })
 
 const handlerError = (err:Error,req,res,next)=>{
-    if(err.message === 'NOT_EXIST_USER'){
-      return res.status(404).json({code:'NOT_EXIST_USER',message:'Not exist this user'});
+    if(err.message === 'NO_USER'){
+      return res.status(404).json({code:'NO_USER',message:"This user don't exist"});
     }
-    if(err.message === 'NOT_CANT_UPDATE'){
-      return res.status(404).json({code:'NOT_CANT_UPDATE',message:'There is nothing to update'});
+    if(err.message === 'WRONG_PASSWORD'){
+      return res.status(404).json({code:'WRONG_PASSWORD',message:'Wrong password to log in'});
+    }
+    if(err.message === 'NOT_AUTHORIZED'){
+      return res.status(404).json({code:'NOT_AUTHORIZED',message:'You dont have authorization to do this action'});
+    }
+    if(err.message === 'NO_TOKEN'){
+      return res.status(404).json({code:'NO_TOKEN',message:'There was an error with the log in, try again'});
+    }
+    if(err.message === 'INFO_LEFT'){
+      return res.status(404).json({code:'INFO_LEFT',message:"There's info left to do this action"});
+    }
+    if(err.message === 'CANT_CREATE_QUOTE'){
+      return res.status(404).json({code:'CANT_CREATE_QUOTE',message:"The dentist/customer have a quote in that period of time"});
     }
     return res.status(500).json({code:'SERVER_ERROR',message:err.message});
     

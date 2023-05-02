@@ -18,7 +18,7 @@ export const createQuote = async (newQuote, token) => {
     newQuote.dateOfQuote = new Date(newQuote.dateOfQuote)
     newQuote.endOfQuote = new Date(newQuote.endOfQuote)
     console.log(await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer))
-    if(await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer)) {
+    if((await checkQuoteConcur(newQuote.dateOfQuote,newQuote.endOfQuote,newQuote.dentist, newQuote.customer))) {
         throw new Error('DENTIST_IN_OTHER_QUOTE')
     }
     let quote = new Quote(newQuote)

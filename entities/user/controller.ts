@@ -5,33 +5,25 @@ import bcrypt from 'bcrypt';
 
 export const userLogIn = async(user) => {
     const findUser = await Users.findOne({email: user.email}).select('+password')
-    if(!findUser){
-        throw new Error('NOT_EXIST_USER')
-    }
-    if(!(await bcrypt.compare(user.password, findUser.password))){
-        throw new Error('NOT_EXIST_USER')
-    }
+    if(!findUser) throw new Error('NO_USER')
+    if(!(await bcrypt.compare(user.password, findUser.password))) throw new Error('WRONG_PASSWORD')
     const token = jwt.sign({email: user.email, id: findUser._id, rol: findUser.rol}, config.SECRET)
     return token
 }
 
 export const searchUserById = async(id, token)=>{
-
-    if(token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST){
-        if(token.id !== id){
-          throw new Error('NOT_AUTHORIZED');
-        }
-        const user = await Users.findOne({_id:id},token);
+    if(token.rol === USER_ROLS.CLIENT && token.id === id){
+        const user = await Users.findOne({_id:id});
+        return user
+    } else if (token.rol === USER_ROLS.DENTIST) {
+        const user = await Users.findOne({_id:id});
+        if(token.id !== id && user?.rol !== USER_ROLS.CLIENT) throw new Error('NOT_AUTHORIZED')
+        return user
+    } else if(token.rol === USER_ROLS.ADMIN){
+        const user = await Users.findOne({_id:id});
         return user
     }
-    if(token.rol === USER_ROLS.ADMIN){
-        const user = await Users.find({});
-        return user
-    }
-    else{
-        throw new Error('SERVER_ERROR')
-    }
-
+    throw new Error('NOT_AUTHORIZED');
 };
 
 export const createUser = async(newUser) => {
@@ -41,26 +33,20 @@ export const createUser = async(newUser) => {
 };
 
 export const updateUser = async(id, body, token) => {
-
-    if(token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) {
-        const user = await Users.findOne({_id:id});
-        if(!user) {
-          throw new Error('USER_NOT_FOUND');
-        }
-        if(token.id !== id) {
-          throw new Error('NOT_AUTHORIZED');
-        }
+    if((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && id === token.id) {
         const userUpdate = await Users.updateOne({_id:id},body,token);
+        if(!userUpdate) throw new Error('NO_USER');
         return userUpdate;
-    }
-
-    if(token.rol === USER_ROLS.ADMIN) {
+    } else if(token.rol === USER_ROLS.ADMIN) {
         const userUpdate = await Users.updateOne({_id:id},body);
         return userUpdate;
-    } else {
-        throw new Error('SERVER_ERROR')
-    }
+    } 
+    throw new Error('NOT_AUTHORIZED')
 };
 
-
-
+export const getUsers = async(token) => {
+    if(token.rol === USER_ROLS.ADMIN) {
+        return await Users.find({})
+    } 
+    throw new Error('NOT_AUTHORIZED')
+}
