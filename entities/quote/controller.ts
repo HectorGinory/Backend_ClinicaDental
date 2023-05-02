@@ -74,7 +74,7 @@ export const getQuotes = async(query, token) => {
 }
 
 export const getQuotesId = async(id, token) => {
-    const quote = await Quote.findOne({_id: id})
+    const quote = await Quote.findOne({_id: id}).populate([{path: 'customer', select: ['name', 'email']}, {path: 'dentist', select: ['name', 'email']}])
     if(!quote) throw new Error('NO_QUOTE')
     if(token.rol === USER_ROLS.CLIENT ? token.id !== quote.customer.toString() : token.rol === USER_ROLS.DENTIST ? token.id !== quote.dentist.toString() : false) throw new Error('NO_AUTH')
     return quote
