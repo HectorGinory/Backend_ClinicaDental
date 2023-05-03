@@ -35,6 +35,7 @@ export const createUser = async(newUser) => {
 export const updateUser = async(id, body, token) => {
     if((token.rol === USER_ROLS.CLIENT || token.rol === USER_ROLS.DENTIST) && id === token.id) {
         body.rol = token.rol
+        if(body.password) body.password = await bcrypt.hash(body.password, 1)
         const userUpdate = await Users.findOneAndUpdate({_id:id},body,{returnDocument: 'after'});
         if(!userUpdate) throw new Error('NO_USER');
         return userUpdate;
