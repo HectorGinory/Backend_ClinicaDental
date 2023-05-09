@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import routerUser from './entities/user/router.js';
 import routerQuote from './entities/quote/router.js';
 import config from './config.js';
+import cors from 'cors'
 
 const app = express();
 
@@ -38,7 +39,17 @@ const handlerError = (err:Error,req,res,next)=>{
     
 };
 
+let corsOptions = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  // methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  preflightContinue: false,
+  // allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization",
+  optionsSuccessStatus: 204
+};
+
 app.use(express.json());
+app.use(cors(corsOptions));
 app.use('/user', routerUser)
 app.use('/quote', routerQuote)
 app.use(handlerError);
