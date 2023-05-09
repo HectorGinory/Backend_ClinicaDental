@@ -4,6 +4,7 @@ import routerUser from './entities/user/router.js';
 import routerQuote from './entities/quote/router.js';
 import config from './config.js';
 import cors from 'cors'
+
 const app = express();
 
 mongoose.connect(config.DDBB!).then(()=>{
